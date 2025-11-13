@@ -1,0 +1,150 @@
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <iostream>
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <math.h>
+#include <getopt.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/wait.h>
+#include <signal.h>
+
+//clang++ -std=c++17 -stdlib=libc++ -o app src/main.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lsfml-graphics -lsfml-window -lsfml-system -rpath /opt/homebrew/lib
+
+#define OX_OX 800
+#define OY_OY 500
+
+
+enum pose
+{
+    POSE_yes_OX = 150,
+    POSE_yes_minus_OY = 330,
+
+    POSE_noo_OX = 450,
+    POSE_noo_minus_OY = 330,
+
+    //координаты левого верхнего угла прямоугольника
+    SIZE_but_OX = 200,  
+    SIZE_but_OY = 50,
+};
+
+
+sf::Text text_create(sf::Vector2f pose, const char* yes_noo, sf::Font *font);
+
+sf::RectangleShape create_butt(sf::Color color, sf::Vector2f pose);
+
+
+int main() 
+{
+    pid_t pid = fork();
+    
+    if(pid == 0)
+    {
+        system("cd ~/Desktop/прога/Akinator/music && afplay Sherlock.mp3");
+        exit(0);
+    }
+
+
+    sf::RenderWindow window(sf::VideoMode({OX_OX, OY_OY}), "Black crypto pool"); //создаем окно размером
+    
+
+    auto button_yes = create_butt(sf::Color(7, 67, 245), {POSE_yes_OX, POSE_yes_minus_OY});
+    auto button_noo = create_butt(sf::Color(245, 7, 67), {POSE_noo_OX, POSE_noo_minus_OY});     //sf::RectangleShape
+
+
+    sf::Font font;
+    (void)font.openFromFile("/System/Library/Fonts/Helvetica.ttc");
+
+    auto text_yes = text_create({POSE_yes_OX + 77, POSE_yes_minus_OY + 10}, "yes", &font);
+    auto text_noo = text_create({POSE_noo_OX + 87, POSE_noo_minus_OY + 10}, "no", &font);       //sf::Text
+
+    
+    sf::Texture texture;
+    if(!texture.loadFromFile("/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/kartinki/Morbius_y_n.jpg")) 
+    {
+        printf("Error image\n");
+        return -1;
+    }
+    
+    
+    sf::Sprite morbius(texture);
+    morbius.setTexture(texture);
+
+    morbius.setPosition({-10, -50});  //coordinats
+    morbius.setScale({0.7f, 0.7f});
+
+
+    while(window.isOpen()) 
+    {
+        while(auto event = window.pollEvent()) 
+        {
+            if (event->is<sf::Event::Closed>())
+                window.close();
+
+            auto mousePose = sf::Mouse::getPosition(window);
+
+            if (auto* click = event->getIf<sf::Event::MouseButtonPressed>())    //достаем из событий нажатие мыши 
+            {
+                if (click->button == sf::Mouse::Button::Left)
+                {
+                    if((mousePose.x > POSE_noo_OX) && (mousePose.x < POSE_noo_OX + SIZE_but_OX) && \
+                        (mousePose.y > POSE_noo_minus_OY) && (mousePose.y < POSE_noo_minus_OY + SIZE_but_OY))
+                            system("cd ~/Desktop/прога/Akinator/video_siki && open Tak_eto_Ostrov.mp4");
+                }
+            }
+
+            
+            if (auto* click = event->getIf<sf::Event::MouseButtonPressed>())    //достаем из событий нажатие мыши 
+            {
+                if (click->button == sf::Mouse::Button::Left)
+                {
+                    if((mousePose.x > POSE_yes_OX) && (mousePose.x < POSE_yes_OX + SIZE_but_OX) && \
+                        (mousePose.y > POSE_yes_minus_OY) && (mousePose.y < POSE_yes_minus_OY + SIZE_but_OY))
+                            system("cd ~/Desktop/прога/Akinator/video_siki && open Getsbi_bokal.mp4");
+                }
+            }
+        }
+
+        
+        window.clear();
+
+        window.draw(morbius);
+
+        window.draw(button_yes);
+        window.draw(text_yes);
+
+        window.draw(button_noo);
+        window.draw(text_noo);
+        
+        window.display();
+    }
+    
+    return 0;
+}
+
+
+sf::RectangleShape create_butt(sf::Color color, sf::Vector2f pose)
+{
+    sf::RectangleShape button(sf::Vector2f(SIZE_but_OX, SIZE_but_OY));   //size in float -- Vector2_f/i/ui
+    button.setFillColor(color);
+    button.setPosition(pose);
+
+    return button;
+}
+
+
+sf::Text text_create(sf::Vector2f pose, const char* yes_noo, sf::Font *font)
+{
+    sf::Text text(*font, yes_noo, 22);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(pose);
+
+    return text;
+}

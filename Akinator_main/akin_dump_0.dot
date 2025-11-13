@@ -1,0 +1,24 @@
+digraph
+{
+rankdir=TB;
+nodesep=0.4;
+ranksep=1.0;
+  labelloc="t";
+  label="ROOT: 0x603000001c00
+NUM_ZAP: 0
+just dumpi";
+leaf_0x603000001c00 [label = "{index = 0x603000001c00 | val = Животное? | {yes = 0x603000001c90 | no = 0x603000001cf0 | prev = 0x0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001c90 [label = "{index = 0x603000001c90 | val = gavk? | {yes = 0x603000001cc0 | no = 0x603000001c30 | prev = 0x603000001c00}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001cc0 [label = "{index = 0x603000001cc0 | val = pes | {yes = 0x0 | no = 0x0 | prev = 0x603000001c90}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001c30 [label = "{index = 0x603000001c30 | val = кот | {yes = 0x0 | no = 0x0 | prev = 0x603000001c90}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001cf0 [label = "{index = 0x603000001cf0 | val = rich? | {yes = 0x603000001d20 | no = 0x603000001c60 | prev = 0x603000001c00}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001d20 [label = "{index = 0x603000001d20 | val = iron | {yes = 0x0 | no = 0x0 | prev = 0x603000001cf0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001c60 [label = "{index = 0x603000001c60 | val = персонаж | {yes = 0x0 | no = 0x0 | prev = 0x603000001cf0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001c00 -> leaf_0x603000001cf0;
+leaf_0x603000001cf0 -> leaf_0x603000001c60;
+leaf_0x603000001cf0 -> leaf_0x603000001d20;
+leaf_0x603000001c00 -> leaf_0x603000001c90;
+leaf_0x603000001c90 -> leaf_0x603000001c30;
+leaf_0x603000001c90 -> leaf_0x603000001cc0;
+
+}

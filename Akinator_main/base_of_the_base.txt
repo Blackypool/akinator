@@ -1,0 +1,1 @@
+( "Животное?" ( "gavk?" ( "pes"  nil nil )( "кот"  nil nil ))( "rich?" ( "iron"  nil nil )( "персонаж"  nil nil )))

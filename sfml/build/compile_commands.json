@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/artem888bogdanovmail.ru/Desktop/прога/procc/Akinator/sfml/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/opt/homebrew/include -g -std=gnu++17 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk -o CMakeFiles/app.dir/src/main.cpp.o -c /Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/sfml/src/main.cpp",
+  "file": "/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/sfml/src/main.cpp",
+  "output": "CMakeFiles/app.dir/src/main.cpp.o"
+}
+]

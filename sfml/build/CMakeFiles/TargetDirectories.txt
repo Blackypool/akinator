@@ -1,0 +1,3 @@
+/Users/artem888bogdanovmail.ru/Desktop/прога/procc/sfml/build/CMakeFiles/app.dir
+/Users/artem888bogdanovmail.ru/Desktop/прога/procc/sfml/build/CMakeFiles/edit_cache.dir
+/Users/artem888bogdanovmail.ru/Desktop/прога/procc/sfml/build/CMakeFiles/rebuild_cache.dir
