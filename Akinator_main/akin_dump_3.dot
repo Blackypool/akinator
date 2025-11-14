@@ -1,0 +1,36 @@
+digraph
+{
+rankdir=TB;
+nodesep=0.4;
+ranksep=1.0;
+  labelloc="t";
+  label="ROOT: 0x603000001bd0
+NUM_ZAP: 3
+just конструктоор";
+leaf_0x603000001bd0 [label = "{index = 0x603000001bd0 | val = Животное? | {yes = 0x603000001c30 | no = 0x603000001d80 | prev = 0x0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001c30 [label = "{index = 0x603000001c30 | val = gavk? | {yes = 0x603000001c60 | no = 0x603000001cf0 | prev = 0x603000001bd0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001c60 [label = "{index = 0x603000001c60 | val = bitmeyker? | {yes = 0x603000001c90 | no = 0x603000001cc0 | prev = 0x603000001c30}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001c90 [label = "{index = 0x603000001c90 | val = sanya | {yes = 0x0 | no = 0x0 | prev = 0x603000001c60}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001cc0 [label = "{index = 0x603000001cc0 | val = pes | {yes = 0x0 | no = 0x0 | prev = 0x603000001c60}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001cf0 [label = "{index = 0x603000001cf0 | val = tihonya? | {yes = 0x603000001d20 | no = 0x603000001d50 | prev = 0x603000001c30}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001d20 [label = "{index = 0x603000001d20 | val = amir | {yes = 0x0 | no = 0x0 | prev = 0x603000001cf0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001d50 [label = "{index = 0x603000001d50 | val = кот | {yes = 0x0 | no = 0x0 | prev = 0x603000001cf0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001d80 [label = "{index = 0x603000001d80 | val = rich? | {yes = 0x603000001db0 | no = 0x603000001e40 | prev = 0x603000001bd0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001db0 [label = "{index = 0x603000001db0 | val = kriptoman? | {yes = 0x603000001de0 | no = 0x603000001e10 | prev = 0x603000001d80}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001de0 [label = "{index = 0x603000001de0 | val = artem | {yes = 0x0 | no = 0x0 | prev = 0x603000001db0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001e10 [label = "{index = 0x603000001e10 | val = iron | {yes = 0x0 | no = 0x0 | prev = 0x603000001db0}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001e40 [label = "{index = 0x603000001e40 | val = персонаж | {yes = 0x0 | no = 0x0 | prev = 0x603000001d80}}",                  style = "rounded, filled",                     fillcolor = "#9a9ffaff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x603000001bd0 -> leaf_0x603000001d80;
+leaf_0x603000001d80 -> leaf_0x603000001e40;
+leaf_0x603000001d80 -> leaf_0x603000001db0;
+leaf_0x603000001db0 -> leaf_0x603000001e10;
+leaf_0x603000001db0 -> leaf_0x603000001de0;
+leaf_0x603000001bd0 -> leaf_0x603000001c30;
+leaf_0x603000001c30 -> leaf_0x603000001cf0;
+leaf_0x603000001cf0 -> leaf_0x603000001d50;
+leaf_0x603000001cf0 -> leaf_0x603000001d20;
+leaf_0x603000001c30 -> leaf_0x603000001c60;
+leaf_0x603000001c60 -> leaf_0x603000001cc0;
+leaf_0x603000001c60 -> leaf_0x603000001c90;
+
+}

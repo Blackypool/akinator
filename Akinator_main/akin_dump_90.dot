@@ -1,0 +1,36 @@
+digraph
+{
+rankdir=TB;
+nodesep=0.4;
+ranksep=1.0;
+  labelloc="t";
+  label="ROOT: 0x12070cd50
+NUM_ZAP: 90
+constructor";
+leaf_0x12070cd50 [label = "{index = 0x12070cd50 | val = Play? | {yes = 0x12070cdf0 | no = 0x12070da50 | prev = 0x0}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070cdf0 [label = "{index = 0x12070cdf0 | val = gavkaet? | {yes = 0x12070ce10 | no = 0x12070d9f0 | prev = 0x12070cd50}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070ce10 [label = "{index = 0x12070ce10 | val = bitmeyker? | {yes = 0x12070d9b0 | no = 0x12070d9d0 | prev = 0x12070cdf0}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070d9b0 [label = "{index = 0x12070d9b0 | val = sanya | {yes = 0x0 | no = 0x0 | prev = 0x12070ce10}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070d9d0 [label = "{index = 0x12070d9d0 | val = pes | {yes = 0x0 | no = 0x0 | prev = 0x12070ce10}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070d9f0 [label = "{index = 0x12070d9f0 | val = shahmata? | {yes = 0x12070da10 | no = 0x12070da30 | prev = 0x12070cdf0}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070da10 [label = "{index = 0x12070da10 | val = ferz | {yes = 0x0 | no = 0x0 | prev = 0x12070d9f0}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070da30 [label = "{index = 0x12070da30 | val = maccuin | {yes = 0x0 | no = 0x0 | prev = 0x12070d9f0}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070da50 [label = "{index = 0x12070da50 | val = Do you want risk? | {yes = 0x12070da90 | no = 0x12070db10 | prev = 0x12070cd50}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070da90 [label = "{index = 0x12070da90 | val = kripta? | {yes = 0x12070dab0 | no = 0x12070dad0 | prev = 0x12070da50}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070dab0 [label = "{index = 0x12070dab0 | val = altcoins | {yes = 0x0 | no = 0x0 | prev = 0x12070da90}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070dad0 [label = "{index = 0x12070dad0 | val = long long long x100 investing | {yes = 0x0 | no = 0x0 | prev = 0x12070da90}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070db10 [label = "{index = 0x12070db10 | val = obligacii | {yes = 0x0 | no = 0x0 | prev = 0x12070da50}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
+leaf_0x12070cd50 -> leaf_0x12070da50;
+leaf_0x12070da50 -> leaf_0x12070db10;
+leaf_0x12070da50 -> leaf_0x12070da90;
+leaf_0x12070da90 -> leaf_0x12070dad0;
+leaf_0x12070da90 -> leaf_0x12070dab0;
+leaf_0x12070cd50 -> leaf_0x12070cdf0;
+leaf_0x12070cdf0 -> leaf_0x12070d9f0;
+leaf_0x12070d9f0 -> leaf_0x12070da30;
+leaf_0x12070d9f0 -> leaf_0x12070da10;
+leaf_0x12070cdf0 -> leaf_0x12070ce10;
+leaf_0x12070ce10 -> leaf_0x12070d9d0;
+leaf_0x12070ce10 -> leaf_0x12070d9b0;
+
+}

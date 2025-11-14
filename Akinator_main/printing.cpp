@@ -43,7 +43,7 @@ void draw_leaf(FILE *fp_out, struct leaf *leaf)
 
     fprintf(fp_out, "leaf_%p [label = \"{index = %p | val = %s | {yes = %p | no = %p | prev = %p}}\", \
                  style = \"rounded, filled\", \
-                    fillcolor = \"#9a9ffaff\", fontcolor = \"#000000\", shape = Mrecord];\n", leaf, leaf, leaf->ques_ans, leaf->yes, leaf->no, leaf->prev);
+                    fillcolor = \"#a2a6f1ff\", fontcolor = \"#000000\", shape = Mrecord];\n", leaf, leaf, leaf->ques_ans, leaf->yes, leaf->no, leaf->prev);
 
 
     if(leaf->yes != NULL)

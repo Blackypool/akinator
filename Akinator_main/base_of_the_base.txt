@@ -1,1 +1,1 @@
-( "Животное?" ( "gavk?" ( "pes"  nil nil )( "кот"  nil nil ))( "rich?" ( "iron"  nil nil )( "персонаж"  nil nil )))
+( "Play?" ( "gavkaet?" ( "bitmeyker?" ( "sanya"  nil nil )( "pes"  nil nil ))( "shahmata?" ( "ferz"  nil nil )( "maccuin"  nil nil )))( "Do you want risk?" ( "kripta?" ( "altcoins"  nil nil )( "long long long x100 investing"  nil nil ))( "obligacii"  nil nil )))

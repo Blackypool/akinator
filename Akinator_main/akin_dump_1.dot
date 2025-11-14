@@ -5,7 +5,7 @@ nodesep=0.4;
 ranksep=1.0;
   labelloc="t";
   label="ROOT: 0x12e8085f0
-NUM_ZAP: 0
+NUM_ZAP: 1
 just dumpi";
 leaf_0x12e8085f0 [label = "{index = 0x12e8085f0 | val = Play? | {yes = 0x12e808550 | no = 0x12e8092f0 | prev = 0x0}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];
 leaf_0x12e808550 [label = "{index = 0x12e808550 | val = gavkaet? | {yes = 0x12e8091d0 | no = 0x12e809260 | prev = 0x12e8085f0}}",                  style = "rounded, filled",                     fillcolor = "#a2a6f1ff", fontcolor = "#000000", shape = Mrecord];

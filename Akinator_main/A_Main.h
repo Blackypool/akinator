@@ -20,6 +20,8 @@
 #include "chitalka.h"
 #include "defenition.h"
 
+#include "/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/sfml/src/for_sfml.h"
+
 
 #define BASA_dannhh "base_of_the_base.txt"
 #define HLP tree->fict_helper

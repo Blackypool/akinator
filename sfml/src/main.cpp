@@ -16,10 +16,11 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+#include "for_sfml.h"
+
 //clang++ -std=c++17 -stdlib=libc++ -o app src/main.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lsfml-graphics -lsfml-window -lsfml-system -rpath /opt/homebrew/lib
 
-#define OX_OX 800
-#define OY_OY 500
+//clang++ -std=c++17 -stdlib=libc++ -o app  Alladin_ma.cpp constr_distr.cpp add_wiki.cpp printing.cpp defenition.cpp chitalka.cpp /Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/sfml/src/main.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lsfml-graphics -lsfml-window -lsfml-system -rpath /opt/homebrew/lib
 
 
 enum pose
@@ -41,7 +42,8 @@ sf::Text text_create(sf::Vector2f pose, const char* yes_noo, sf::Font *font);
 sf::RectangleShape create_butt(sf::Color color, sf::Vector2f pose);
 
 
-int main() 
+
+int okno_sfml(const char* question)
 {
     pid_t pid = fork();
     
@@ -64,15 +66,17 @@ int main()
 
     auto text_yes = text_create({POSE_yes_OX + 77, POSE_yes_minus_OY + 10}, "yes", &font);
     auto text_noo = text_create({POSE_noo_OX + 87, POSE_noo_minus_OY + 10}, "no", &font);       //sf::Text
-
     
+    //question
+    auto text_of_question = text_create({(float)OX_OX / 2 - 45, (float)OY_OY - 60}, question, &font);
+    
+
     sf::Texture texture;
     if(!texture.loadFromFile("/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/kartinki/Morbius_y_n.jpg")) 
     {
         printf("Error image\n");
         return -1;
     }
-    
     
     sf::Sprite morbius(texture);
     morbius.setTexture(texture);
@@ -96,7 +100,10 @@ int main()
                 {
                     if((mousePose.x > POSE_noo_OX) && (mousePose.x < POSE_noo_OX + SIZE_but_OX) && \
                         (mousePose.y > POSE_noo_minus_OY) && (mousePose.y < POSE_noo_minus_OY + SIZE_but_OY))
-                            system("cd ~/Desktop/прога/Akinator/video_siki && open Tak_eto_Ostrov.mp4");
+                        {
+                            //system("cd ~/Desktop/прога/Akinator/video_siki && open Tak_eto_Ostrov.mp4");
+                            return JUST_NOO;
+                        }
                 }
             }
 
@@ -107,9 +114,13 @@ int main()
                 {
                     if((mousePose.x > POSE_yes_OX) && (mousePose.x < POSE_yes_OX + SIZE_but_OX) && \
                         (mousePose.y > POSE_yes_minus_OY) && (mousePose.y < POSE_yes_minus_OY + SIZE_but_OY))
-                            system("cd ~/Desktop/прога/Akinator/video_siki && open Getsbi_bokal.mp4");
+                        {
+                            //system("cd ~/Desktop/прога/Akinator/video_siki && open Getsbi_bokal.mp4");
+                            return JUST_YES;
+                        }
                 }
             }
+
         }
 
         
@@ -122,6 +133,8 @@ int main()
 
         window.draw(button_noo);
         window.draw(text_noo);
+
+        window.draw(text_of_question);
         
         window.display();
     }

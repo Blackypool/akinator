@@ -10,9 +10,14 @@ int main()
 {
     struct Main_of_tree tree = {};
 
+    int num = 90;
+
     constructor(&tree);
+    // true_picture(&tree, tree.root, &num, "constructor");
 
     zapusk(&tree);
+
+    true_picture(&tree, tree.root, &num, "just dumpi");
 
 
     //////////////
@@ -28,12 +33,6 @@ int main()
     fell_a_tree(&tree);
 
     return 0;
-
-    // struct Main_of_tree tree = {};
-    // constructor(&tree);
-    // zapusk(&tree);
-    // pre_order_printf(fp_out, tree.root);
-    // fell_a_tree(&tree);
 }
 
 
@@ -46,31 +45,40 @@ void quizer(struct Main_of_tree *tree, struct leaf *leaf)
 
         if(leaf->yes != NULL && leaf->no != NULL)   //this is question
         {
-            printf("%s\n", leaf->ques_ans);
+            int ans = okno_sfml(leaf->ques_ans);
 
-            scanf("%s", ans_std);
-
-            if(strcmp("yes", ans_std) == 0)
+            if(ans == JUST_YES)    //yes
+            {
                 quizer(tree, leaf->yes);
+            }
 
-            if(strcmp("no", ans_std) == 0)
+            if(ans == JUST_NOO)    //no
+            {
                 quizer(tree, leaf->no);
+            }
+            // printf("%s\n", leaf->ques_ans);
+
+            // scanf("%s", ans_std);
+
+            // if(strcmp("yes", ans_std) == 0)
+            //     quizer(tree, leaf->yes);
+
+            // if(strcmp("no", ans_std) == 0)
+            //     quizer(tree, leaf->no);
         }
 
         else
         {
-            printf("Это %s?\n", leaf->ques_ans);
-            scanf("%s", ans_std);
+            int ans = okno_sfml(leaf->ques_ans);
 
+            if(ans == JUST_YES)
+                system("cd ~/Desktop/прога/Akinator/video_siki && open Getsbi_bokal.mp4");
 
-            if(strcmp("yes", ans_std) == 0)
+            if(ans == JUST_NOO)
             {
-                printf("\nУгадал)\n");
-            }
+                system("cd ~/Desktop/прога/Akinator && open Tak_eto_Ostrov.mp4");
+                                
                 
-
-            if(strcmp("no", ans_std) == 0)
-            {
                 if(leaf->prev->no == leaf)
                 {
                     erro = extension_wiki(tree, &leaf, 2); // 2 - предыдущий нет
@@ -85,6 +93,33 @@ void quizer(struct Main_of_tree *tree, struct leaf *leaf)
 
                 quizer(tree, tree->root);
             }
+
+            // printf("Это %s?\n", leaf->ques_ans);
+            // scanf("%s", ans_std);
+
+
+            // if(strcmp("yes", ans_std) == 0)
+            // {
+            //     printf("\nУгадал)\n");
+            // }
+                
+
+            // if(strcmp("no", ans_std) == 0)
+            // {
+            //     if(leaf->prev->no == leaf)
+            //     {
+            //         erro = extension_wiki(tree, &leaf, 2); // 2 - предыдущий нет
+            //         AsserT(erro != 0, );
+            //     }
+
+            //     if(leaf->prev->yes == leaf)
+            //     {
+            //         erro = extension_wiki(tree, &leaf, 1);
+            //         AsserT(erro != 0, );
+            //     }
+
+            //     quizer(tree, tree->root);
+            // }
         }
     }
 }
@@ -103,7 +138,10 @@ void zapusk(struct Main_of_tree *tree)
         scanf("%s", operatia);
 
         if(strcmp(operatia, "akinator") == 0)
+        {
             quizer(tree, tree->root);
+        }
+            
 
 
         if(strcmp(operatia, "opredelenie") == 0)
@@ -119,7 +157,6 @@ void zapusk(struct Main_of_tree *tree)
         
         if(strcmp(operatia, "stop") == 0)
             break;
-
-        true_picture(tree, tree->root, &number_of_zapusk, "just dumpi");
+        
     }
 }

@@ -29,7 +29,7 @@ void come_back(struct leaf *leaf)
     char definition[1307] = "";
 
     struct leaf* fict = leaf->prev;
-     struct leaf* curr = leaf;
+    struct leaf* curr = leaf;
 
     printf("\nНашел твое слово %s\nВот его точное определение: ", leaf->ques_ans);
 
@@ -40,9 +40,9 @@ void come_back(struct leaf *leaf)
         definition[strlen(definition) - 1] = ' ';
 
         if(fict->yes == curr)
-            printf("-->%s",definition);
+            printf(" %s",definition);
         
-        else printf("-->не %s",definition);
+        else printf(" no %s",definition);
 
         curr = fict;
 

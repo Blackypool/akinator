@@ -15,9 +15,7 @@ int constructor(struct Main_of_tree *tree)
 
     tree->basis = file_pointer_read();
 
-
-    create_base(tree->basis);//??
-
+    tree->root = create_base(&(tree->basis));
 
     kanareyka_checker(tree, __FILE__, __LINE__);
 

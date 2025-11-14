@@ -3,7 +3,11 @@
 
 #include "A_Main.h"
 
-char* create_base(char* curent_in_txt);
+struct leaf* create_base(char** curent_in_txt_ptr);
+
+struct leaf* read_words(char** curent_in_txt_ptr);
+
+int nil_li_you(char** curent_in_txt_ptr);
 
 size_t number_of_file();
 
