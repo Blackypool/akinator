@@ -59,7 +59,7 @@ int okno_sfml(const char* question)
 
     sf::Texture texture;
     (void)texture.loadFromFile("/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/kartinki/Morbius_y_n.jpg");
-    
+
     sf::Sprite morbius(texture);        // morbius.setTexture(texture);
 
     morbius.setPosition({-10, -50});    //coordinats
