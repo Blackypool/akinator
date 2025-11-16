@@ -19,8 +19,9 @@
 #include "printing.h"
 #include "chitalka.h"
 #include "defenition.h"
-
-#include "/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/sfml/src/for_sfml.h"
+#include "sf_ml_ka.h"
+#include "for_video_frag.h"
+#include "sortigent_vid.h"
 
 
 #define BASA_dannhh "base_of_the_base.txt"
@@ -51,6 +52,10 @@ struct leaf
     struct leaf* yes;
     struct leaf* no;
 };
+
+
+#define ART(paint) \
+            window.draw(paint)
 
 
 #define AsserT(what_need, retern)  \

@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <optional>
 #include <iostream>
 
 #include <stdio.h>
@@ -41,17 +42,20 @@ sf::Text text_create(sf::Vector2f pose, const char* yes_noo, sf::Font *font);
 
 sf::RectangleShape create_butt(sf::Color color, sf::Vector2f pose);
 
+int yes_come_back_no(int pose_yes_no_ox, int pose_yes_no_oy, int Yes_or_No, sf::Vector2i *mousePose);
 
 
-int okno_sfml(const char* question)
+//int okno_sfml(const char* question)
+
+
 {
-    pid_t pid = fork();
+    // pid_t pid = fork();
     
-    if(pid == 0)
-    {
-        system("cd ~/Desktop/прога/Akinator/music && afplay Sherlock.mp3");
-        exit(0);
-    }
+    // if(pid == 0)
+    // {
+    //     system("cd ~/Desktop/прога/Akinator/music && afplay Sherlock.mp3");
+    //     exit(0);
+    // }
 
 
     sf::RenderWindow window(sf::VideoMode({OX_OX, OY_OY}), "Black crypto pool"); //создаем окно размером
@@ -65,21 +69,16 @@ int okno_sfml(const char* question)
     (void)font.openFromFile("/System/Library/Fonts/Helvetica.ttc");
 
     auto text_yes = text_create({POSE_yes_OX + 77, POSE_yes_minus_OY + 10}, "yes", &font);
-    auto text_noo = text_create({POSE_noo_OX + 87, POSE_noo_minus_OY + 10}, "no", &font);       //sf::Text
+    auto text_noo = text_create({POSE_noo_OX + 87, POSE_noo_minus_OY + 10}, "no" , &font);       //sf::Text
     
     //question
     auto text_of_question = text_create({(float)OX_OX / 2 - 45, (float)OY_OY - 60}, question, &font);
     
 
     sf::Texture texture;
-    if(!texture.loadFromFile("/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/kartinki/Morbius_y_n.jpg")) 
-    {
-        printf("Error image\n");
-        return -1;
-    }
+    (void)texture.loadFromFile("/Users/artem888bogdanovmail.ru/Desktop/прога/Akinator/kartinki/Morbius_y_n.jpg");
     
-    sf::Sprite morbius(texture);
-    morbius.setTexture(texture);
+    sf::Sprite morbius(texture);        // morbius.setTexture(texture);
 
     morbius.setPosition({-10, -50});  //coordinats
     morbius.setScale({0.7f, 0.7f});
@@ -87,54 +86,35 @@ int okno_sfml(const char* question)
 
     while(window.isOpen()) 
     {
-        while(auto event = window.pollEvent()) 
+        while(auto event = window.pollEvent()) //достаем событие
         {
             if (event->is<sf::Event::Closed>())
                 window.close();
 
-            auto mousePose = sf::Mouse::getPosition(window);
+            auto mousePose = sf::Mouse::getPosition(window);  //Vector2i
 
-            if (auto* click = event->getIf<sf::Event::MouseButtonPressed>())    //достаем из событий нажатие мыши 
-            {
-                if (click->button == sf::Mouse::Button::Left)
-                {
-                    if((mousePose.x > POSE_noo_OX) && (mousePose.x < POSE_noo_OX + SIZE_but_OX) && \
-                        (mousePose.y > POSE_noo_minus_OY) && (mousePose.y < POSE_noo_minus_OY + SIZE_but_OY))
-                        {
-                            //system("cd ~/Desktop/прога/Akinator/video_siki && open Tak_eto_Ostrov.mp4");
-                            return JUST_NOO;
-                        }
-                }
-            }
 
-            
-            if (auto* click = event->getIf<sf::Event::MouseButtonPressed>())    //достаем из событий нажатие мыши 
-            {
-                if (click->button == sf::Mouse::Button::Left)
-                {
-                    if((mousePose.x > POSE_yes_OX) && (mousePose.x < POSE_yes_OX + SIZE_but_OX) && \
-                        (mousePose.y > POSE_yes_minus_OY) && (mousePose.y < POSE_yes_minus_OY + SIZE_but_OY))
-                        {
-                            //system("cd ~/Desktop/прога/Akinator/video_siki && open Getsbi_bokal.mp4");
-                            return JUST_YES;
-                        }
-                }
-            }
+            int ret_1 = yes_come_back_no(POSE_yes_OX, POSE_yes_minus_OY, JUST_YES, &mousePose);
+            if(ret_1 != -1)
+                return JUST_YES;
 
+            int ret_2 = yes_come_back_no(POSE_noo_OX, POSE_noo_minus_OY, JUST_NOO, &mousePose);
+            if(ret_2 != -1)
+                return JUST_NOO;
         }
 
         
         window.clear();
 
-        window.draw(morbius);
+        ART(morbius);
 
-        window.draw(button_yes);
-        window.draw(text_yes);
+        ART(button_yes);
+        ART(text_yes);
 
-        window.draw(button_noo);
-        window.draw(text_noo);
+        ART(button_noo);
+        ART(text_noo);
 
-        window.draw(text_of_question);
+        ART(text_of_question);
         
         window.display();
     }
@@ -161,3 +141,60 @@ sf::Text text_create(sf::Vector2f pose, const char* yes_noo, sf::Font *font)
 
     return text;
 }
+
+
+int yes_come_back_no(int pose_yes_no_ox, int pose_yes_no_oy, int Yes_or_No, sf::Vector2i *mousePose)
+{
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+    {            
+        if((mousePose->x > pose_yes_no_ox) && (mousePose->x < pose_yes_no_ox + SIZE_but_OX) && \
+           (mousePose->y > pose_yes_no_oy) && (mousePose->y < pose_yes_no_oy + SIZE_but_OY))
+                return Yes_or_No;
+    }
+
+    return -1;
+}
+
+
+// int yes_come_back_no(int pose_yes_no_ox, int pose_yes_no_oy, int Yes_or_No, std::optional<sf::Event> *event, sf::Vector2i *mousePose)
+// //закидываем событие 
+//{                       //проверяем событие =? нажатие лкм
+//     if (auto* click = event->value().getIf<sf::Event::MouseButtonPressed>())    //достаем из событий нажатие мыши 
+//     {
+//         // struct MouseButtonPressed = click
+//         // {
+//         //     sf::Mouse::Button button;
+//         //     int x;
+//         //     int y;
+//         // };
+//         if (click->button == sf::Mouse::Button::Left)
+//         {
+//             if((mousePose->x > pose_yes_no_ox) && (mousePose->x < pose_yes_no_ox + SIZE_but_OX) && \
+//                (mousePose->y > pose_yes_no_oy) && (mousePose->y < pose_yes_no_oy + SIZE_but_OY))
+//                         return Yes_or_No;
+//         }
+//     }
+//
+//     return -1;
+// }
+
+            // if (auto* click = event->value().getIf<sf::Event::MouseButtonPressed>())    //достаем из событий нажатие мыши 
+            // {
+            //     if (click->button == sf::Mouse::Button::Left)
+            //     {
+            //         if((mousePose.x > POSE_noo_OX) && (mousePose.x < POSE_noo_OX + SIZE_but_OX) && \
+            //             (mousePose.y > POSE_noo_minus_OY) && (mousePose.y < POSE_noo_minus_OY + SIZE_but_OY))
+            //                 return JUST_NOO;
+            //     }
+            // }
+
+            
+            // if (auto* click = event->getIf<sf::Event::MouseButtonPressed>())    //достаем из событий нажатие мыши 
+            // {
+            //     if (click->button == sf::Mouse::Button::Left)
+            //     {
+            //         if((mousePose.x > POSE_yes_OX) && (mousePose.x < POSE_yes_OX + SIZE_but_OX) && \
+            //             (mousePose.y > POSE_yes_minus_OY) && (mousePose.y < POSE_yes_minus_OY + SIZE_but_OY))
+            //                 return JUST_YES;
+            //     }
+            // }

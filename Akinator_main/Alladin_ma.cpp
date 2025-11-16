@@ -13,11 +13,9 @@ int main()
     int num = 90;
 
     constructor(&tree);
-    // true_picture(&tree, tree.root, &num, "constructor");
+    true_picture(&tree, tree.root, &num, "constructor");
 
     zapusk(&tree);
-
-    true_picture(&tree, tree.root, &num, "just dumpi");
 
 
     //////////////
@@ -49,6 +47,7 @@ void quizer(struct Main_of_tree *tree, struct leaf *leaf)
 
             if(ans == JUST_YES)    //yes
             {
+                what_the_operation(tree, leaf->ques_ans);
                 quizer(tree, leaf->yes);
             }
 
@@ -72,12 +71,15 @@ void quizer(struct Main_of_tree *tree, struct leaf *leaf)
             int ans = okno_sfml(leaf->ques_ans);
 
             if(ans == JUST_YES)
-                system("cd ~/Desktop/прога/Akinator/video_siki && open Getsbi_bokal.mp4");
+                what_the_operation(tree, "ugadal");
+                // system("cd ~/Desktop/прога/Akinator/video_siki && open Getsbi_bokal.mp4");
 
             if(ans == JUST_NOO)
             {
-                system("cd ~/Desktop/прога/Akinator && open Tak_eto_Ostrov.mp4");
-                                
+                what_the_operation(tree, "no");
+                // system("cd ~/Desktop/прога/Akinator && open Tak_eto_Ostrov.mp4");
+                // int err = vudeo_pusk();  
+                // AsserT(err != 0, )       
                 
                 if(leaf->prev->no == leaf)
                 {
@@ -152,9 +154,8 @@ void zapusk(struct Main_of_tree *tree)
             scanf("%s", str);
 
             find_func(tree->root, str);
-        }
+        }  
 
-        
         if(strcmp(operatia, "stop") == 0)
             break;
         
