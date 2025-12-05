@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Neon Undead Survival</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Neon color palette */
+            --color-neon-pink: #ff006e;
+            --color-neon-cyan: #00d9ff;
+            --color-neon-purple: #b700ff;
+            --color-neon-green: #39ff14;
+            --color-neon-orange: #ff6600;
+            --color-dark-bg: #0a0e27;
+            --color-dark-surface: #16213e;
+            --color-text: #e0e0e0;
+            --color-accent: #00d9ff;
+        }
+
+        body {
+            background-color: var(--color-dark-bg);
+            color: var(--color-text);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a0033 100%);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-dark-bg);
+        }
+
+        /* ===== MENU STYLES ===== */
+        .menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 0, 51, 0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .menu.hidden {
+            display: none;
+        }
+
+        .menu-title {
+            font-size: 4rem;
+            font-weight: bold;
+            text-shadow: 
+                0 0 20px var(--color-neon-pink),
+                0 0 40px var(--color-neon-purple);
+            color: var(--color-neon-pink);
+            text-align: center;
+            animation: glow-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% {
+                text-shadow: 
+                    0 0 20px var(--color-neon-pink),
+                    0 0 40px var(--color-neon-purple);
+            }
+            50% {
+                text-shadow: 
+                    0 0 30px var(--color-neon-pink),
+                    0 0 60px var(--color-neon-purple),
+                    0 0 80px var(--color-neon-cyan);
+            }
+        }
+
+        .menu-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-neon-cyan);
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 250px;
+        }
+
+        .btn-menu {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            border: 2px solid var(--color-neon-cyan);
+            background: transparent;
+            color: var(--color-neon-cyan);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--color-neon-cyan);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-menu:hover::before {
+            left: 0;
+        }
+
+        .btn-menu:hover {
+            color: var(--color-dark-bg);
+            box-shadow: 0 0 20px var(--color-neon-cyan),
+                        inset 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .leaderboard {
+            background: rgba(22, 33, 62, 0.8);
+            border: 2px solid var(--color-neon-cyan);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .leaderboard-title {
+            color: var(--color-neon-pink);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            color: var(--color-neon-cyan);
+        }
+
+        /* ===== SETTINGS PANEL ===== */
+        .settings-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(22, 33, 62, 0.95);
+            border: 3px solid var(--color-neon-pink);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 0 40px rgba(255, 0, 110, 0.3);
+        }
+
+        .settings-panel.visible {
+            display: block;
+        }
+
+        .settings-title {
+            color: var(--color-neon-pink);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            color: var(--color-neon-cyan);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-value {
+            color: var(--color-neon-green);
+            font-weight: bold;
+        }
+
+        .setting-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--color-neon-cyan), var(--color-neon-pink));
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .setting-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neon-green);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--color-neon-green);
+        }
+
+        .setting-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--color-neon-green);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px var(--color-neon-green);
+        }
+
+        .setting-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--color-neon-cyan);
+        }
+
+        .settings-close {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 30px;
+            background: var(--color-neon-pink);
+            color: var(--color-dark-bg);
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* ===== HUD STYLES ===== */
+        .hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 100;
+            font-size: 0.65rem;
+        }
+
+        .hud-panel {
+            background: rgba(22, 33, 62, 0.7);
+            border: 1px solid var(--color-neon-cyan);
+            border-radius: 5px;
+            padding: 8px;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .hud-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            align-items: center;
+        }
+
+        .hud-stat:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            color: var(--color-neon-cyan);
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 0.6rem;
+        }
+
+        .stat-value {
+            color: var(--color-neon-green);
+            font-weight: bold;
+            font-size: 0.65rem;
+        }
+
+        .health-bar-bg {
+            width: 100px;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--color-neon-cyan);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-neon-green), var(--color-neon-orange));
+            width: 100%;
+            transition: width 0.2s ease;
+            box-shadow: 0 0 10px var(--color-neon-green);
+        }
+
+        .ammo-info {
+            color: var(--color-neon-orange);
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .wave-info {
+            color: var(--color-neon-pink);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(22, 33, 62, 0.95);
+            border: 3px solid var(--color-neon-pink);
+            border-radius: 10px;
+            padding: 30px 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-neon-pink);
+            z-index: 500;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: notification-pop 0.5s ease-out, notification-fade 0.5s ease-out 1.5s forwards;
+            box-shadow: 0 0 40px rgba(255, 0, 110, 0.5);
+        }
+
+        @keyframes notification-pop {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes notification-fade {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* ===== MOBILE CONTROLS ===== */
+        .mobile-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            padding: 0 20px;
+            display: none;
+            z-index: 200;
+        }
+
+        .mobile-controls.visible {
+            display: block;
+        }
+
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .mobile-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(0, 217, 255, 0.2);
+            border: 2px solid var(--color-neon-cyan);
+            border-radius: 10px;
+            color: var(--color-neon-cyan);
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .mobile-btn:active {
+            background: var(--color-neon-cyan);
+            color: var(--color-dark-bg);
+            box-shadow: 0 0 20px var(--color-neon-cyan);
+        }
+
+        .mobile-btn.fire {
+            background: rgba(255, 0, 110, 0.2);
+            border-color: var(--color-neon-pink);
+            color: var(--color-neon-pink);
+        }
+
+        .mobile-btn.fire:active {
+            background: var(--color-neon-pink);
+            color: var(--color-dark-bg);
+            box-shadow: 0 0 20px var(--color-neon-pink);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .menu-title {
+                font-size: 2.5rem;
+            }
+
+            .hud {
+                font-size: 0.6rem;
+            }
+
+            .health-bar-bg {
+                width: 80px;
+            }
+
+            .settings-panel {
+                max-width: 90%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .menu {
+                gap: 15px;
+            }
+
+            .menu-title {
+                font-size: 2rem;
+            }
+
+            .menu-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .btn-menu {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- MAIN MENU -->
+        <div id="mainMenu" class="menu">
+            <div class="menu-title">⚔ NEON UNDEAD</div>
+            <div class="menu-subtitle">Survive the endless waves of neon-infected zombies in a dystopian megacity. How long can you last?</div>
+            
+            <div id="leaderboardDisplay" class="leaderboard">
+                <div class="leaderboard-title">🏆 LEADERBOARD</div>
+                <div id="leaderboardContent"></div>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn-menu" id="startBtn">▶ Start Game</button>
+                <button class="btn-menu" id="settingsBtn">⚙ Settings</button>
+                <button class="btn-menu" id="controlsBtn">📋 Controls</button>
+            </div>
+        </div>
+
+        <!-- SETTINGS PANEL -->
+        <div id="settingsPanel" class="settings-panel">
+            <div class="settings-title">⚙ SETTINGS</div>
+
+            <div class="setting-group">
+                <div class="setting-label">
+                    <span>Graphics Quality</span>
+                    <span class="setting-value" id="graphicsValue">High</span>
+                </div>
+                <input type="range" id="graphicsSlider" class="setting-slider" min="0" max="2" value="2">
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-label">Screen Shake</div>
+                <input type="checkbox" id="screenShakeToggle" class="setting-checkbox" checked>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-label">Dynamic Lighting</div>
+                <input type="checkbox" id="lightingToggle" class="setting-checkbox" checked>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-label">
+                    <span>Mouse Sensitivity</span>
+                    <span class="setting-value" id="sensitivityValue">1.0</span>
+                </div>
+                <input type="range" id="sensitivitySlider" class="setting-slider" min="0.3" max="2" step="0.1" value="1">
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-label">
+                    <span>Master Volume</span>
+                    <span class="setting-value" id="volumeValue">100%</span>
+                </div>
+                <input type="range" id="volumeSlider" class="setting-slider" min="0" max="100" value="100">
+            </div>
+
+            <button class="settings-close" id="settingsCloseBtn">CLOSE</button>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud" class="hud">
+            <div class="hud-panel">
+                <div class="hud-stat">
+                    <span class="stat-label">HEALTH</span>
+                    <span class="stat-value" id="healthValue">100/100</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="health-bar-bg">
+                        <div class="health-bar-fill" id="healthBar"></div>
+                    </div>
+                </div>
+
+                <div class="hud-stat">
+                    <span class="stat-label">STAMINA</span>
+                    <span class="stat-value" id="staminaValue">100/100</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="health-bar-bg">
+                        <div class="health-bar-fill" id="staminaBar" style="background: linear-gradient(90deg, var(--color-neon-purple), var(--color-neon-cyan));"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hud-panel">
+                <div class="hud-stat">
+                    <span class="stat-label">WEAPON</span>
+                    <span id="weaponName" class="stat-value">Pistol</span>
+                </div>
+                <div class="hud-stat">
+                    <span class="stat-label">AMMO</span>
+                    <span class="ammo-info" id="ammoInfo">∞ / ∞</span>
+                </div>
+                <div class="hud-stat">
+                    <span class="stat-label">STATUS</span>
+                    <span id="statusInfo" class="stat-value">Ready</span>
+                </div>
+            </div>
+
+            <div class="hud-panel">
+                <div class="hud-stat">
+                    <span class="wave-info">WAVE <span id="waveNumber">1</span></span>
+                    <span class="stat-value" id="zombieCount">0 left</span>
+                </div>
+                <div class="hud-stat">
+                    <span class="stat-label">SCORE</span>
+                    <span id="scoreValue" class="stat-value">0</span>
+                </div>
+                <div class="hud-stat">
+                    <span class="stat-label">SURVIVED</span>
+                    <span id="timeValue" class="stat-value">0:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOBILE CONTROLS -->
+        <div id="mobileControls" class="mobile-controls">
+            <div class="controls-row">
+                <button class="mobile-btn" id="mbtnUp">↑ UP</button>
+                <button class="mobile-btn" id="mbtnDown">↓ DOWN</button>
+            </div>
+            <div class="controls-row">
+                <button class="mobile-btn" id="mbtnLeft">← LEFT</button>
+                <button class="mobile-btn" id="mbtnRight">→ RIGHT</button>
+            </div>
+            <div class="controls-row">
+                <button class="mobile-btn" id="mbtnReload">R RELOAD</button>
+                <button class="mobile-btn fire" id="mbtnFire">💥 FIRE</button>
+            </div>
+            <div class="controls-row">
+                <button class="mobile-btn" id="mbtnWeapon1">PISTOL</button>
+                <button class="mobile-btn" id="mbtnWeapon2">AUTO</button>
+                <button class="mobile-btn" id="mbtnWeapon3">SHOTGUN</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        // GAME ENGINE - Neon Undead Survival
+        // =====================================================
+        // Complete HTML5 zombie shooter with mobile support
+        // Uses Canvas 2D with particle effects, procedural graphics
+        // Fully self-contained, no external dependencies
+        // =====================================================
+
+        // ===== CONSTANTS & CONFIG =====
+        const CONFIG = {
+            // Canvas
+            GAME_WIDTH: window.innerWidth,
+            GAME_HEIGHT: window.innerHeight,
+            
+            // Player
+            PLAYER_SPEED: 180,
+            PLAYER_SPRINT_SPEED: 280,
+            PLAYER_RADIUS: 15,
+            PLAYER_MAX_HP: 100,
+            
+            // Stamina
+            STAMINA_MAX: 100,
+            STAMINA_DRAIN_SPRINT: 40,
+            STAMINA_REGEN: 25,
+            
+            // Weapons
+            WEAPONS: {
+                pistol: {
+                    name: 'Pistol',
+                    damage: 25,
+                    fireRate: 0.3,
+                    reloadTime: 0.5,
+                    magazine: -1,
+                    maxAmmo: -1,
+                    spread: 2,
+                    bulletSpeed: 600,
+                    knockback: 50,
+                    sound: 'pew'
+                },
+                auto: {
+                    name: 'Assault Rifle',
+                    damage: 15,
+                    fireRate: 0.1,
+                    reloadTime: 1.2,
+                    magazine: 30,
+                    maxAmmo: 120,
+                    spread: 8,
+                    bulletSpeed: 550,
+                    knockback: 20,
+                    sound: 'rapid'
+                },
+                shotgun: {
+                    name: 'Shotgun',
+                    damage: 50,
+                    fireRate: 0.8,
+                    reloadTime: 1.5,
+                    magazine: 8,
+                    maxAmmo: 32,
+                    spread: 20,
+                    bulletSpeed: 400,
+                    knockback: 150,
+                    pellets: 8,
+                    sound: 'boom'
+                }
+            },
+            
+            // Zombies
+            ZOMBIE_TYPES: {
+                normal: {
+                    speed: 100,
+                    hp: 30,
+                    damage: 10,
+                    radius: 12,
+                    color: '#00d9ff'
+                },
+                fast: {
+                    speed: 200,
+                    hp: 15,
+                    damage: 8,
+                    radius: 10,
+                    color: '#ff006e'
+                },
+                tank: {
+                    speed: 60,
+                    hp: 80,
+                    damage: 20,
+                    radius: 20,
+                    color: '#b700ff'
+                }
+            },
+
+            // Waves
+            WAVE_DURATION: 30,
+            PREP_DURATION: 10,
+        };
+
+        // ===== SETTINGS MANAGER =====
+        class SettingsManager {
+            constructor() {
+                this.settings = {
+                    graphicsQuality: 2, // 0=low, 1=med, 2=high
+                    screenShake: true,
+                    dynamicLighting: true,
+                    mouseSensitivity: 1.0,
+                    masterVolume: 100
+                };
+                this.loadSettings();
+                this.setupUI();
+            }
+
+            loadSettings() {
+                const saved = localStorage.getItem('neonSettings');
+                if (saved) {
+                    this.settings = { ...this.settings, ...JSON.parse(saved) };
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('neonSettings', JSON.stringify(this.settings));
+            }
+
+            setupUI() {
+                // Graphics
+                const graphicsSlider = document.getElementById('graphicsSlider');
+                graphicsSlider.value = this.settings.graphicsQuality;
+                graphicsSlider.addEventListener('change', (e) => {
+                    this.settings.graphicsQuality = parseInt(e.target.value);
+                    const labels = ['Low', 'Medium', 'High'];
+                    document.getElementById('graphicsValue').textContent = labels[this.settings.graphicsQuality];
+                    this.saveSettings();
+                });
+
+                // Screen shake
+                const shakeToggle = document.getElementById('screenShakeToggle');
+                shakeToggle.checked = this.settings.screenShake;
+                shakeToggle.addEventListener('change', (e) => {
+                    this.settings.screenShake = e.target.checked;
+                    this.saveSettings();
+                });
+
+                // Lighting
+                const lightingToggle = document.getElementById('lightingToggle');
+                lightingToggle.checked = this.settings.dynamicLighting;
+                lightingToggle.addEventListener('change', (e) => {
+                    this.settings.dynamicLighting = e.target.checked;
+                    this.saveSettings();
+                });
+
+                // Sensitivity
+                const sensitivitySlider = document.getElementById('sensitivitySlider');
+                sensitivitySlider.value = this.settings.mouseSensitivity;
+                sensitivitySlider.addEventListener('change', (e) => {
+                    this.settings.mouseSensitivity = parseFloat(e.target.value);
+                    document.getElementById('sensitivityValue').textContent = this.settings.mouseSensitivity.toFixed(1);
+                    this.saveSettings();
+                });
+
+                // Volume
+                const volumeSlider = document.getElementById('volumeSlider');
+                volumeSlider.value = this.settings.masterVolume;
+                volumeSlider.addEventListener('change', (e) => {
+                    this.settings.masterVolume = parseInt(e.target.value);
+                    document.getElementById('volumeValue').textContent = this.settings.masterVolume + '%';
+                    this.saveSettings();
+                });
+            }
+        }
+
+        // ===== PARTICLE SYSTEM =====
+        class Particle {
+            constructor(x, y, vx, vy, color, life, size = 3) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.maxLife = life;
+                this.life = life;
+                this.size = size;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+            }
+
+            update(dt) {
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+                this.vy += 200 * dt; // gravity
+                this.life -= dt;
+                this.rotation += this.rotationSpeed;
+                this.vx *= 0.98; // friction
+            }
+
+            draw(ctx) {
+                const alpha = this.life / this.maxLife;
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = this.color;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+                ctx.globalAlpha = 1;
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        // ===== INPUT MANAGER =====
+        class InputManager {
+            constructor() {
+                this.keys = {};
+                this.mouseX = 0;
+                this.mouseY = 0;
+                this.mousePressed = false;
+                this.mobileKeys = {};
+                this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                this.setupListeners();
+                this.setupMobileControls();
+            }
+
+            setupListeners() {
+                window.addEventListener('keydown', (e) => {
+                    this.keys[e.key.toLowerCase()] = true;
+                    if (['w', 'a', 's', 'd', ' ', 'r', 'shift'].includes(e.key.toLowerCase())) {
+                        e.preventDefault();
+                    }
+                });
+
+                window.addEventListener('keyup', (e) => {
+                    this.keys[e.key.toLowerCase()] = false;
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                });
+
+                document.addEventListener('mousedown', (e) => {
+                    if (e.button === 0) this.mousePressed = true;
+                });
+
+                document.addEventListener('mouseup', (e) => {
+                    if (e.button === 0) this.mousePressed = false;
+                });
+
+                // Touch support
+                document.addEventListener('touchmove', (e) => {
+                    const touch = e.touches[0];
+                    this.mouseX = touch.clientX;
+                    this.mouseY = touch.clientY;
+                }, { passive: true });
+            }
+
+            setupMobileControls() {
+                if (this.isMobile) {
+                    document.getElementById('mobileControls').classList.add('visible');
+                }
+
+                const buttons = {
+                    'mbtnUp': 'w',
+                    'mbtnDown': 's',
+                    'mbtnLeft': 'a',
+                    'mbtnRight': 'd',
+                    'mbtnReload': 'r',
+                    'mbtnFire': 'fire',
+                    'mbtnWeapon1': '1',
+                    'mbtnWeapon2': '2',
+                    'mbtnWeapon3': '3'
+                };
+
+                Object.entries(buttons).forEach(([id, key]) => {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.addEventListener('touchstart', (e) => {
+                            e.preventDefault();
+                            this.mobileKeys[key] = true;
+                        });
+                        btn.addEventListener('touchend', (e) => {
+                            e.preventDefault();
+                            this.mobileKeys[key] = false;
+                        });
+                        btn.addEventListener('mousedown', () => {
+                            this.mobileKeys[key] = true;
+                        });
+                        btn.addEventListener('mouseup', () => {
+                            this.mobileKeys[key] = false;
+                        });
+                    }
+                });
+            }
+
+            isPressed(key) {
+                return this.keys[key.toLowerCase()] || this.mobileKeys[key];
+            }
+
+            isActivated(key) {
+                if (key === 'fire') {
+                    return this.mousePressed || this.mobileKeys['fire'];
+                }
+                return this.isPressed(key);
+            }
+
+            getMousePos() {
+                return { x: this.mouseX, y: this.mouseY };
+            }
+        }
+
+        // ===== PLAYER CLASS =====
+        class Player {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = 0;
+                this.vy = 0;
+                this.width = CONFIG.PLAYER_RADIUS;
+                this.height = CONFIG.PLAYER_RADIUS;
+                
+                this.hp = CONFIG.PLAYER_MAX_HP;
+                this.maxHp = CONFIG.PLAYER_MAX_HP;
+                this.stamina = CONFIG.STAMINA_MAX;
+                this.maxStamina = CONFIG.STAMINA_MAX;
+                this.isSprinting = false;
+                
+                this.weaponIndex = 0;
+                this.weapons = ['pistol', 'auto', 'shotgun'];
+                this.currentWeapon = CONFIG.WEAPONS[this.weapons[this.weaponIndex]];
+                this.ammo = this.currentWeapon.magazine === -1 ? -1 : this.currentWeapon.magazine;
+                this.totalAmmo = this.currentWeapon.maxAmmo === -1 ? -1 : this.currentWeapon.maxAmmo;
+                
+                this.lastShotTime = 0;
+                this.reloadTime = 0;
+                this.isReloading = false;
+                
+                this.angle = 0;
+                this.invulnerable = 0;
+            }
+
+            update(dt, input) {
+                // Movement
+                let moveX = 0;
+                let moveY = 0;
+                
+                if (input.isPressed('w') || input.isPressed('arrowup')) moveY -= 1;
+                if (input.isPressed('s') || input.isPressed('arrowdown')) moveY += 1;
+                if (input.isPressed('a') || input.isPressed('arrowleft')) moveX -= 1;
+                if (input.isPressed('d') || input.isPressed('arrowright')) moveX += 1;
+
+                this.isSprinting = input.isPressed('shift') && this.stamina > 0 && (moveX !== 0 || moveY !== 0);
+                
+                let speed = this.isSprinting ? CONFIG.PLAYER_SPRINT_SPEED : CONFIG.PLAYER_SPEED;
+                
+                if (moveX !== 0 || moveY !== 0) {
+                    const len = Math.sqrt(moveX * moveX + moveY * moveY);
+                    moveX /= len;
+                    moveY /= len;
+                    this.vx = moveX * speed;
+                    this.vy = moveY * speed;
+                } else {
+                    this.vx = 0;
+                    this.vy = 0;
+                }
+
+                // Stamina
+                if (this.isSprinting) {
+                    this.stamina -= CONFIG.STAMINA_DRAIN_SPRINT * dt;
+                    this.stamina = Math.max(0, this.stamina);
+                } else {
+                    this.stamina += CONFIG.STAMINA_REGEN * dt;
+                    this.stamina = Math.min(this.maxStamina, this.stamina);
+                }
+
+                // Position
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+
+                // Clamp to canvas
+                this.x = Math.max(this.width, Math.min(CONFIG.GAME_WIDTH - this.width, this.x));
+                this.y = Math.max(this.width, Math.min(CONFIG.GAME_HEIGHT - this.width, this.y));
+
+                // Weapon switching
+                if (input.isPressed('1') || input.isPressed('2') || input.isPressed('3')) {
+                    const weaponNum = parseInt(input.keys['1'] ? '1' : (input.keys['2'] ? '2' : '3'));
+                    this.switchWeapon(weaponNum - 1);
+                }
+
+                // Reload
+                if (input.isPressed('r')) {
+                    this.reload();
+                }
+
+                // Reloading logic
+                if (this.isReloading) {
+                    this.reloadTime -= dt;
+                    if (this.reloadTime <= 0) {
+                        this.isReloading = false;
+                        if (this.currentWeapon.maxAmmo !== -1) {
+                            const reloadAmount = Math.min(
+                                this.currentWeapon.magazine - this.ammo,
+                                this.totalAmmo
+                            );
+                            this.ammo += reloadAmount;
+                            this.totalAmmo -= reloadAmount;
+                        }
+                    }
+                }
+
+                // Angle to mouse
+                const mouse = input.getMousePos();
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                this.angle = Math.atan2(dy, dx);
+
+                this.invulnerable -= dt;
+            }
+
+            draw(ctx) {
+                // Body
+                ctx.fillStyle = this.invulnerable > 0 ? '#ffff00' : '#00d9ff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Glow
+                ctx.strokeStyle = '#00d9ff';
+                ctx.lineWidth = 2;
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.width + 5, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+
+                // Weapon direction
+                const barrelLength = 20;
+                ctx.strokeStyle = '#ff006e';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(
+                    this.x + Math.cos(this.angle) * barrelLength,
+                    this.y + Math.sin(this.angle) * barrelLength
+                );
+                ctx.stroke();
+            }
+
+            shoot(game) {
+                if (this.isReloading) return;
+                if (this.ammo === 0) return;
+                if (game.now - this.lastShotTime < this.currentWeapon.fireRate) return;
+
+                this.lastShotTime = game.now;
+
+                // Consume ammo
+                if (this.currentWeapon.magazine !== -1) {
+                    this.ammo--;
+                    if (this.ammo <= 0) {
+                        this.reload();
+                    }
+                }
+
+                // Fire bullets
+                const pelletCount = this.currentWeapon.pellets || 1;
+                for (let i = 0; i < pelletCount; i++) {
+                    const spread = (Math.random() - 0.5) * this.currentWeapon.spread * Math.PI / 180;
+                    const angle = this.angle + spread;
+                    
+                    const bullet = {
+                        x: this.x + Math.cos(this.angle) * 15,
+                        y: this.y + Math.sin(this.angle) * 15,
+                        vx: Math.cos(angle) * this.currentWeapon.bulletSpeed,
+                        vy: Math.sin(angle) * this.currentWeapon.bulletSpeed,
+                        damage: this.currentWeapon.damage,
+                        life: 5,
+                        weapon: this.weapons[this.weaponIndex]
+                    };
+                    game.bullets.push(bullet);
+
+                    // Muzzle flash particles
+                    for (let j = 0; j < 8; j++) {
+                        const angle = this.angle + (Math.random() - 0.5) * Math.PI / 4;
+                        game.particles.push(
+                            new Particle(
+                                this.x + Math.cos(angle) * 15,
+                                this.y + Math.sin(angle) * 15,
+                                Math.cos(angle) * 300 + (Math.random() - 0.5) * 100,
+                                Math.sin(angle) * 300 + (Math.random() - 0.5) * 100,
+                                '#ffcc00',
+                                0.3,
+                                4
+                            )
+                        );
+                    }
+                }
+
+                // Screen shake
+                if (game.settings.settings.screenShake) {
+                    game.screenShake = 0.1;
+                }
+
+                // Play sound (visual feedback)
+                this.playShootSound(game);
+            }
+
+            playShootSound(game) {
+                // Visual feedback instead of audio
+                const feedbackColor = '#ff006e';
+            }
+
+            reload() {
+                if (this.currentWeapon.magazine === -1) return;
+                if (this.ammo === this.currentWeapon.magazine) return;
+                if (this.totalAmmo <= 0) return;
+                
+                this.isReloading = true;
+                this.reloadTime = this.currentWeapon.reloadTime;
+            }
+
+            switchWeapon(index) {
+                if (index === this.weaponIndex) return;
+                this.weaponIndex = index;
+                this.currentWeapon = CONFIG.WEAPONS[this.weapons[this.weaponIndex]];
+                this.ammo = this.currentWeapon.magazine === -1 ? -1 : this.currentWeapon.magazine;
+                this.totalAmmo = this.currentWeapon.maxAmmo === -1 ? -1 : this.currentWeapon.maxAmmo;
+                this.isReloading = false;
+            }
+
+            takeDamage(amount) {
+                if (this.invulnerable > 0) return;
+                this.hp -= amount;
+                this.invulnerable = 0.5;
+            }
+
+            isAlive() {
+                return this.hp > 0;
+            }
+        }
+
+        // ===== ZOMBIE CLASS =====
+        class Zombie {
+            constructor(x, y, type = 'normal') {
+                const config = CONFIG.ZOMBIE_TYPES[type];
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.speed = config.speed;
+                this.hp = config.hp;
+                this.maxHp = config.hp;
+                this.damage = config.damage;
+                this.radius = config.radius;
+                this.color = config.color;
+                this.vx = 0;
+                this.vy = 0;
+                this.attackCooldown = 0;
+                this.deathParticles = 0;
+            }
+
+            update(dt, player, obstacles) {
+                if (this.hp <= 0) return;
+
+                // Simple pathfinding - move towards player
+                const dx = player.x - this.x;
+                const dy = player.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > 0) {
+                    this.vx = (dx / dist) * this.speed;
+                    this.vy = (dy / dist) * this.speed;
+                }
+
+                // Move
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+
+                // Collision with obstacles (simple box collision)
+                for (const obs of obstacles) {
+                    if (this.checkCollision(obs)) {
+                        this.x -= this.vx * dt;
+                        this.y -= this.vy * dt;
+                    }
+                }
+
+                // Attack cooldown
+                this.attackCooldown = Math.max(0, this.attackCooldown - dt);
+
+                // Clamp to canvas
+                this.x = Math.max(this.radius, Math.min(CONFIG.GAME_WIDTH - this.radius, this.x));
+                this.y = Math.max(this.radius, Math.min(CONFIG.GAME_HEIGHT - this.radius, this.y));
+            }
+
+            checkCollision(rect) {
+                const closestX = Math.max(rect.x, Math.min(this.x, rect.x + rect.width));
+                const closestY = Math.max(rect.y, Math.min(this.y, rect.y + rect.height));
+                const dx = this.x - closestX;
+                const dy = this.y - closestY;
+                return dx * dx + dy * dy < this.radius * this.radius;
+            }
+
+            draw(ctx) {
+                // Body
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.hp > 0 ? 1 : 0.5;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Glow
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 1;
+                ctx.globalAlpha = 0.3;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius + 8, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+
+                // Health indicator for tank zombies
+                if (this.type === 'tank' && this.hp < this.maxHp) {
+                    ctx.fillStyle = '#39ff14';
+                    ctx.fillRect(this.x - 15, this.y - this.radius - 10, 30 * (this.hp / this.maxHp), 3);
+                }
+            }
+
+            takeDamage(amount) {
+                this.hp -= amount;
+            }
+
+            explode(particles) {
+                // Tank explosion
+                if (this.type === 'tank') {
+                    for (let i = 0; i < 20; i++) {
+                        const angle = (Math.PI * 2 * i) / 20;
+                        particles.push(
+                            new Particle(
+                                this.x,
+                                this.y,
+                                Math.cos(angle) * 300,
+                                Math.sin(angle) * 300,
+                                '#ff006e',
+                                0.5,
+                                6
+                            )
+                        );
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            isAlive() {
+                return this.hp > 0;
+            }
+
+            canAttack() {
+                return this.attackCooldown === 0;
+            }
+
+            attack() {
+                this.attackCooldown = 1.5;
+            }
+        }
+
+        // ===== WAVE MANAGER =====
+        class WaveManager {
+            constructor() {
+                this.currentWave = 1;
+                this.waveStartTime = 0;
+                this.state = 'prep'; // prep, wave, cleared
+                this.zombieCount = 0;
+                this.prepTime = CONFIG.PREP_DURATION;
+                this.waveTime = CONFIG.WAVE_DURATION;
+            }
+
+            update(dt, zombies) {
+                if (this.state === 'wave') {
+                    this.waveTime -= dt;
+                    if (zombies.length === 0 && this.waveTime <= 0) {
+                        this.state = 'cleared';
+                        this.waveTime = 2;
+                    }
+                } else if (this.state === 'cleared') {
+                    this.waveTime -= dt;
+                    if (this.waveTime <= 0) {
+                        this.startNextWave();
+                    }
+                } else if (this.state === 'prep') {
+                    this.prepTime -= dt;
+                    if (this.prepTime <= 0) {
+                        this.startWave();
+                    }
+                }
+            }
+
+            startWave() {
+                this.state = 'wave';
+                this.waveTime = CONFIG.WAVE_DURATION;
+                this.zombieCount = 5 + this.currentWave * 2;
+            }
+
+            startNextWave() {
+                this.currentWave++;
+                this.prepTime = CONFIG.PREP_DURATION;
+                this.state = 'prep';
+            }
+
+            spawnZombie(game) {
+                if (this.state !== 'wave' || this.zombieCount <= 0) return null;
+                
+                const types = ['normal', 'normal', 'fast'];
+                if (this.currentWave > 3) types.push('tank');
+                
+                const type = types[Math.floor(Math.random() * types.length)];
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 400;
+                
+                const zombie = new Zombie(
+                    game.player.x + Math.cos(angle) * distance,
+                    game.player.y + Math.sin(angle) * distance,
+                    type
+                );
+                
+                this.zombieCount--;
+                return zombie;
+            }
+
+            getProgress() {
+                if (this.state === 'wave') {
+                    return (CONFIG.WAVE_DURATION - this.waveTime) / CONFIG.WAVE_DURATION;
+                }
+                return 0;
+            }
+        }
+
+        // ===== LEADERBOARD =====
+        class Leaderboard {
+            constructor() {
+                this.scores = [];
+                this.loadScores();
+            }
+
+            addScore(waves, score, time) {
+                this.scores.push({ waves, score, time });
+                this.scores.sort((a, b) => b.score - a.score);
+                this.scores = this.scores.slice(0, 10);
+                this.saveScores();
+            }
+
+            saveScores() {
+                localStorage.setItem('neonLeaderboard', JSON.stringify(this.scores));
+            }
+
+            loadScores() {
+                const saved = localStorage.getItem('neonLeaderboard');
+                if (saved) {
+                    this.scores = JSON.parse(saved);
+                }
+            }
+
+            getTopScores(count = 3) {
+                return this.scores.slice(0, count);
+            }
+
+            displayLeaderboard() {
+                const container = document.getElementById('leaderboardContent');
+                const top = this.getTopScores(5);
+                
+                if (top.length === 0) {
+                    container.innerHTML = '<div class="leaderboard-entry"><span>No scores yet!</span></div>';
+                    return;
+                }
+
+                container.innerHTML = top.map((score, i) => `
+                    <div class="leaderboard-entry">
+                        <span>${i + 1}. Wave ${score.waves}</span>
+                        <span>${score.score} pts</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ===== MAIN GAME CLASS =====
+        class Game {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.canvas.width = CONFIG.GAME_WIDTH;
+                this.canvas.height = CONFIG.GAME_HEIGHT;
+
+                this.settings = new SettingsManager();
+                this.input = new InputManager();
+                this.leaderboard = new Leaderboard();
+
+                this.player = new Player(CONFIG.GAME_WIDTH / 2, CONFIG.GAME_HEIGHT / 2);
+                this.zombies = [];
+                this.bullets = [];
+                this.particles = [];
+                this.obstacles = this.createObstacles();
+
+                this.waveManager = new WaveManager();
+                this.score = 0;
+                this.startTime = 0;
+                this.elapsedTime = 0;
+                this.gameActive = false;
+                this.now = 0;
+                this.lastTime = 0;
+                this.screenShake = 0;
+
+                this.spawnTimer = 0;
+
+                this.setupUI();
+                this.showLeaderboard();
+            }
+
+            createObstacles() {
+                const obstacles = [];
+                // Randomly scattered obstacles
+                for (let i = 0; i < 15; i++) {
+                    obstacles.push({
+                        x: Math.random() * CONFIG.GAME_WIDTH,
+                        y: Math.random() * CONFIG.GAME_HEIGHT,
+                        width: 40 + Math.random() * 60,
+                        height: 40 + Math.random() * 60
+                    });
+                }
+                return obstacles;
+            }
+
+            setupUI() {
+                document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+                document.getElementById('settingsBtn').addEventListener('click', () => this.showSettings());
+                document.getElementById('settingsCloseBtn').addEventListener('click', () => this.closeSettings());
+                document.getElementById('controlsBtn').addEventListener('click', () => this.showControls());
+            }
+
+            showLeaderboard() {
+                this.leaderboard.displayLeaderboard();
+            }
+
+            showSettings() {
+                document.getElementById('settingsPanel').classList.add('visible');
+            }
+
+            closeSettings() {
+                document.getElementById('settingsPanel').classList.remove('visible');
+            }
+
+            showControls() {
+                const msg = `
+NEON UNDEAD - CONTROLS
+
+DESKTOP:
+• WASD / Arrow Keys - Move
+• Mouse - Aim
+• Left Click - Shoot
+• Shift - Sprint
+• R - Reload
+• 1/2/3 - Switch weapons
+
+MOBILE:
+• Use on-screen buttons
+• Tap to move & shoot
+
+WEAPONS:
+1. Pistol - Fast, infinite ammo
+2. Assault Rifle - Balanced mag
+3. Shotgun - High damage, slow
+
+Survive waves of zombies!
+Each wave gets harder.
+`;
+                alert(msg);
+            }
+
+            startGame() {
+                document.getElementById('mainMenu').classList.add('hidden');
+                document.getElementById('hud').style.display = 'block';
+                this.gameActive = true;
+                this.startTime = performance.now();
+                this.now = this.startTime;
+                this.lastTime = this.startTime;
+                this.score = 0;
+                this.player.hp = this.player.maxHp;
+                this.player.stamina = this.player.maxStamina;
+                this.zombies = [];
+                this.bullets = [];
+                this.particles = [];
+                this.waveManager = new WaveManager();
+                this.waveManager.prepTime = 3; // Quick start
+                this.gameLoop();
+            }
+
+            endGame() {
+                this.gameActive = false;
+                const waves = this.waveManager.currentWave;
+                const time = Math.floor(this.elapsedTime);
+                
+                this.leaderboard.addScore(waves, this.score, time);
+                this.showLeaderboard();
+
+                const gameOverMsg = `
+GAME OVER
+
+Waves Survived: ${waves}
+Final Score: ${this.score}
+Time: ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')}
+Zombies Killed: ${Math.floor(this.score / 10)}
+                `;
+
+                document.getElementById('mainMenu').classList.remove('hidden');
+                document.getElementById('hud').style.display = 'none';
+
+                setTimeout(() => {
+                    alert(gameOverMsg);
+                }, 500);
+            }
+
+            update(dt) {
+                if (!this.gameActive) return;
+
+                // Update entities
+                this.player.update(dt, this.input);
+
+                // Shoot
+                if (this.input.isActivated('fire')) {
+                    this.player.shoot(this);
+                }
+
+                // Update zombies
+                this.zombies.forEach(z => z.update(dt, this.player, this.obstacles));
+
+                // Update bullets
+                this.bullets = this.bullets.filter(b => {
+                    b.x += b.vx * dt;
+                    b.y += b.vy * dt;
+                    b.life -= dt;
+                    return b.life > 0 && b.x > 0 && b.x < CONFIG.GAME_WIDTH && b.y > 0 && b.y < CONFIG.GAME_HEIGHT;
+                });
+
+                // Bullet-zombie collision
+                for (let i = this.bullets.length - 1; i >= 0; i--) {
+                    const bullet = this.bullets[i];
+                    for (let j = this.zombies.length - 1; j >= 0; j--) {
+                        const zombie = this.zombies[j];
+                        if (!zombie.isAlive()) continue;
+
+                        const dx = zombie.x - bullet.x;
+                        const dy = zombie.y - bullet.y;
+                        if (dx * dx + dy * dy < (zombie.radius + 3) * (zombie.radius + 3)) {
+                            zombie.takeDamage(bullet.damage);
+                            this.score += bullet.damage;
+
+                            // Blood particles
+                            for (let k = 0; k < 5; k++) {
+                                const angle = Math.random() * Math.PI * 2;
+                                this.particles.push(
+                                    new Particle(
+                                        bullet.x,
+                                        bullet.y,
+                                        Math.cos(angle) * 200,
+                                        Math.sin(angle) * 200,
+                                        '#ff006e',
+                                        0.4,
+                                        3
+                                    )
+                                );
+                            }
+
+                            this.bullets.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                // Zombie death & explosions
+                for (let i = this.zombies.length - 1; i >= 0; i--) {
+                    const zombie = this.zombies[i];
+                    if (!zombie.isAlive()) {
+                        zombie.explode(this.particles);
+                        this.zombies.splice(i, 1);
+                    }
+                }
+
+                // Zombie-player collision
+                for (const zombie of this.zombies) {
+                    if (!zombie.isAlive()) continue;
+                    const dx = this.player.x - zombie.x;
+                    const dy = this.player.y - zombie.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < this.player.width + zombie.radius) {
+                        if (zombie.canAttack()) {
+                            this.player.takeDamage(zombie.damage);
+                            zombie.attack();
+                        }
+                    }
+                }
+
+                // Particles
+                this.particles = this.particles.filter(p => !p.isDead());
+                this.particles.forEach(p => p.update(dt));
+
+                // Wave management
+                this.waveManager.update(dt, this.zombies);
+
+                // Spawn zombies
+                this.spawnTimer -= dt;
+                if (this.spawnTimer <= 0 && this.waveManager.state === 'wave') {
+                    const zombie = this.waveManager.spawnZombie(this);
+                    if (zombie) {
+                        this.zombies.push(zombie);
+                        this.spawnTimer = 0.5;
+                    }
+                }
+
+                // Elapsed time
+                this.elapsedTime = (this.now - this.startTime) / 1000;
+
+                // Death check
+                if (!this.player.isAlive()) {
+                    this.endGame();
+                }
+
+                // Screen shake decay
+                this.screenShake = Math.max(0, this.screenShake - dt);
+            }
+
+            draw() {
+                // Screen shake effect
+                let shakeX = 0, shakeY = 0;
+                if (this.screenShake > 0) {
+                    shakeX = (Math.random() - 0.5) * 10;
+                    shakeY = (Math.random() - 0.5) * 10;
+                }
+
+                this.ctx.save();
+                this.ctx.translate(shakeX, shakeY);
+
+                // Background
+                const gradient = this.ctx.createLinearGradient(0, 0, CONFIG.GAME_WIDTH, CONFIG.GAME_HEIGHT);
+                gradient.addColorStop(0, '#0a0e27');
+                gradient.addColorStop(1, '#1a0033');
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, CONFIG.GAME_WIDTH, CONFIG.GAME_HEIGHT);
+
+                // Draw obstacles
+                this.ctx.fillStyle = 'rgba(0, 217, 255, 0.1)';
+                this.ctx.strokeStyle = 'rgba(0, 217, 255, 0.3)';
+                this.ctx.lineWidth = 1;
+                for (const obs of this.obstacles) {
+                    this.ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+                    this.ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
+                }
+
+                // Draw game objects
+                this.player.draw(this.ctx);
+                this.zombies.forEach(z => z.draw(this.ctx));
+
+                // Draw bullets
+                this.ctx.fillStyle = '#ffcc00';
+                for (const bullet of this.bullets) {
+                    this.ctx.beginPath();
+                    this.ctx.arc(bullet.x, bullet.y, 2, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+
+                // Draw particles
+                this.particles.forEach(p => p.draw(this.ctx));
+
+                // Wave progress bar
+                if (this.waveManager.state === 'wave') {
+                    const progress = this.waveManager.getProgress();
+                    this.ctx.fillStyle = 'rgba(255, 0, 110, 0.5)';
+                    this.ctx.fillRect(50, CONFIG.GAME_HEIGHT - 30, 300 * progress, 15);
+                    this.ctx.strokeStyle = '#ff006e';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.strokeRect(50, CONFIG.GAME_HEIGHT - 30, 300, 15);
+                }
+
+                this.ctx.restore();
+
+                // Update HUD
+                this.updateHUD();
+
+                // Notifications
+                if (this.waveManager.state === 'cleared' && this.waveManager.waveTime > 1.5) {
+                    this.showNotification('WAVE CLEARED!');
+                }
+            }
+
+            updateHUD() {
+                document.getElementById('healthValue').textContent = `${Math.ceil(this.player.hp)}/${this.player.maxHp}`;
+                document.getElementById('healthBar').style.width = (this.player.hp / this.player.maxHp * 100) + '%';
+
+                document.getElementById('staminaValue').textContent = `${Math.ceil(this.player.stamina)}/${this.player.maxStamina}`;
+                document.getElementById('staminaBar').style.width = (this.player.stamina / this.player.maxStamina * 100) + '%';
+
+                document.getElementById('weaponName').textContent = this.player.currentWeapon.name;
+                if (this.player.currentWeapon.magazine === -1) {
+                    document.getElementById('ammoInfo').textContent = '∞ / ∞';
+                } else {
+                    document.getElementById('ammoInfo').textContent = `${this.player.ammo} / ${this.player.totalAmmo}`;
+                }
+
+                document.getElementById('statusInfo').textContent = this.player.isReloading ? 'RELOADING...' : 'READY';
+                document.getElementById('waveNumber').textContent = this.waveManager.currentWave;
+                document.getElementById('zombieCount').textContent = `${this.zombies.length} left`;
+                document.getElementById('scoreValue').textContent = this.score;
+
+                const mins = Math.floor(this.elapsedTime / 60);
+                const secs = Math.floor(this.elapsedTime % 60);
+                document.getElementById('timeValue').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            showNotification(text) {
+                const div = document.createElement('div');
+                div.className = 'notification';
+                div.textContent = text;
+                document.body.appendChild(div);
+                setTimeout(() => div.remove(), 2000);
+            }
+
+            gameLoop() {
+                if (!this.gameActive) return;
+
+                const currentTime = performance.now();
+                const dt = (currentTime - this.lastTime) / 1000;
+                this.lastTime = currentTime;
+                this.now = currentTime;
+
+                this.update(Math.min(dt, 0.016)); // Cap at 60 FPS
+                this.draw();
+
+                requestAnimationFrame(() => this.gameLoop());
+            }
+        }
+
+        // ===== INITIALIZE GAME =====
+        window.addEventListener('load', () => {
+            const game = new Game();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            CONFIG.GAME_WIDTH = window.innerWidth;
+            CONFIG.GAME_HEIGHT = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
